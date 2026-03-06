@@ -94,7 +94,7 @@ effective_eagerness = decayed_eagerness * (1.0 - suppression)
 
 For each agent above threshold (in eagerness order):
 
-1. **Ensure typing indicator is running**: Run `exec nohup bash councils/typing-loop.sh {threadId} 300 > /dev/null 2>&1 &` — this keeps "Abel (Text) is typing..." visible throughout the orchestration (fires every 8 seconds for up to 5 minutes).
+1. **Ensure typing indicator is running**: Run `exec pgrep -f "typing-loop.sh ${threadId}" > /dev/null || nohup bash councils/typing-loop.sh ${threadId} 900 > /dev/null 2>&1 &` — only starts a new loop if one isn't already running. 900 seconds (15 min) covers even large orchestrations.
 2. **Read the current thread** (use `message read` on the thread to get latest content including any responses posted earlier this round)
 3. **Read the agent's AGENT.md, MEMORY.md, and config.json** from `councils/agents/{agent-name}/`
 4. **Spawn the agent** using `sessions_spawn` with `mode: "run"` and `model` from the agent's config.json:
@@ -173,9 +173,17 @@ After all agents in a round have responded (CRITICAL — save state IMMEDIATELY 
 - If ALL agent spawns fail, post a brief error summary to the thread instead of the council summary.
 - Never let one agent's failure block the entire round.
 
+## Completion Message
+
+When you finish orchestration, your final text output becomes the subagent completion announcement (sent to the parent session, NOT the thread). Keep it **minimal** — the full summary is already posted in the thread. Your completion text should be ONE line like:
+
+`Council done: {council-name}, {N} agents, {N} rounds, thread {threadId}`
+
+Do NOT repeat the summary content, agent responses, eagerness scores, or any analysis. The parent session doesn't need it — the thread has everything.
+
 ## Important
 
-- You are invisible to the conversation except for the final summary.
-- The ONLY time you call `message` is for the summary (or an error report if everything fails). All other thread posts come from agent subagents.
+- You are invisible to the conversation except for the round summaries.
+- The ONLY time you call `message` is for round summaries (or an error report if everything fails). All other thread posts come from agent subagents.
 - Each agent is a separate, isolated subagent with its own model call.
 - Respect Jorge's time — quality over quantity.
