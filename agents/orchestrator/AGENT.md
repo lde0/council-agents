@@ -83,8 +83,8 @@ effective_eagerness = raw_eagerness * (1.0 - suppression)
 For each agent above threshold (in eagerness order):
 
 1. **Read the current thread** (use `message read` on the thread to get latest content including any responses posted earlier this round)
-2. **Read the agent's AGENT.md and MEMORY.md** from `councils/agents/{agent-name}/`
-3. **Spawn the agent** using `sessions_spawn` with `mode: "run"`:
+2. **Read the agent's AGENT.md, MEMORY.md, and config.json** from `councils/agents/{agent-name}/`
+3. **Spawn the agent** using `sessions_spawn` with `mode: "run"` and `model` from the agent's config.json:
 
 ```
 You are {AgentName}. You are a council agent responding to a discussion thread.
@@ -111,8 +111,9 @@ You are {AgentName}. You are a council agent responding to a discussion thread.
 6. Reply with a one-sentence summary of your response (for orchestrator records).
 ```
 
-4. **Wait for the agent to complete** before spawning the next agent
+4. **Wait for the agent to complete**: After `sessions_spawn`, the agent's completion will auto-announce back to you as a user message. Do NOT proceed to the next agent until you receive this completion message. The announcement contains the agent's summary of what they said.
 5. **Update suppression** and recalculate eagerness for remaining agents
+6. **Repeat** from step 1 for the next agent (re-read the thread to see the latest response)
 
 ## State Management
 
