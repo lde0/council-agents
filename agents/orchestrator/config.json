@@ -1,5 +1,5 @@
 {
-  "model": "anthropic/claude-opus-4-6",
+  "model": "anthropic/claude-sonnet-4-6",
   "thinking": "adaptive",
   "role": "orchestrator",
   "description": "Council orchestrator — manages discourse flow, eagerness scoring, and agent sequencing. Never posts directly to threads.",
