@@ -1,0 +1,18 @@
+{
+  "model": "anthropic/claude-opus-4-6",
+  "thinking": "adaptive",
+  "role": "orchestrator",
+  "description": "Council orchestrator — manages discourse flow, eagerness scoring, and agent sequencing. Never posts directly to threads.",
+  "eagerness": {
+    "responseThreshold": 0.30,
+    "exceptionThreshold": 0.85,
+    "suppressionPerResponse": 0.20,
+    "suppressionLiftPerOtherResponse": 0.05,
+    "suppressionCap": 0.80
+  },
+  "termination": {
+    "initialMaxRounds": 3,
+    "followUpMaxRounds": 1,
+    "exceptionAllowance": 1
+  }
+}
