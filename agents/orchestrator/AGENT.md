@@ -58,6 +58,7 @@ effective_eagerness = raw_eagerness * (1.0 - suppression)
 
 - **Response threshold**: `effective_eagerness >= 0.30`
 - Below threshold → silent unless Jorge explicitly asks for that agent
+- **Forced agents**: If `forcedAgents` is provided in the spawn task, those agents respond regardless of eagerness. They still participate in suppression tracking and their eagerness is still calculated (for ordering), but the threshold gate is bypassed.
 
 ## Termination Conditions
 
@@ -65,9 +66,13 @@ effective_eagerness = raw_eagerness * (1.0 - suppression)
 - **Max rounds**: 3
 - Eagerness naturally culls — most topics should see 1-2 rounds
 
-### After Jorge responds
+### After Jorge responds (follow-up)
 - **Max rounds**: 1 per Jorge message
-- Round counter resets
+- Round counter resets to 0
+- Suppression resets to 0.0 for all agents
+- Recalculate eagerness fresh (Jorge's new message changes the topic dynamics)
+- Update `lastJorgeMessageId` in topic state
+- Update `messageType` to "follow-up" in topic state
 
 ### Eagerness Exception
 - `effective_eagerness >= 0.85` → may respond ONE additional time beyond round limit
