@@ -44,17 +44,27 @@ For each council agent, compute a raw eagerness score (0.0 to 1.0) based on:
 - **Topic specificity** (0.0–0.2): Is the topic narrow enough that only some agents have meaningful input?
 - **Recency boost** (0.0–0.1): Has this agent been silent for a while across topics?
 
+### Round Decay
+
+Each additional round reduces effective raw eagerness — representing diminishing marginal insight:
+- Round 1: raw eagerness as calculated
+- Round 2: raw × 0.70
+- Round 3: raw × 0.45
+
+This ensures broad topics naturally converge. Agents with moderate initial eagerness will drop below threshold in later rounds.
+
 ### Suppression Mechanic
 
 ```
-effective_eagerness = raw_eagerness * (1.0 - suppression)
+decayed_eagerness = raw_eagerness * round_decay_factor
+effective_eagerness = decayed_eagerness * (1.0 - suppression)
 ```
 
-- When an agent responds: `suppression += 0.20`
-- When another agent responds: `suppression -= 0.05` (min 0.0)
+- When an agent responds: `suppression += 0.25`
+- When another agent responds: `suppression -= 0.03` (min 0.0)
 - Suppression capped at 0.80
 - Per-agent, per-topic
-- Resets to 0.0 when Jorge posts a new message
+- Resets to 0.0 when Jorge posts a new message (round decay also resets)
 
 ### Threshold
 
@@ -149,17 +159,23 @@ Topic state stored in `councils/{council-name}/topics/{thread-id}.json`:
 
 ## Post-Round
 
-After all agents in a round have responded:
-1. Save topic state
+After all agents in a round have responded (CRITICAL — save state IMMEDIATELY after each round, not at the very end):
+1. Save topic state FIRST (before summary, before starting next round)
 2. Update your own MEMORY.md with orchestration observations
 3. Post orchestration summary — this is the ONE AND ONLY time you use the `message` tool:
    `message(action=thread-reply, threadId={id}, target={id}, channel=discord, message="**Council Summary — Round {N}**\n\n{brief: eagerness scores, who responded and why, who was below threshold}\n\n───")`
 4. Kill the typing loop: `exec pkill -f "typing-loop.sh {threadId}" 2>/dev/null`
 
+## Error Handling
+
+- If `sessions_spawn` returns `status: "error"`, log the error in your MEMORY.md and skip that agent. Continue with the next.
+- If an agent's completion announce indicates failure, log it and continue.
+- If ALL agent spawns fail, post a brief error summary to the thread instead of the council summary.
+- Never let one agent's failure block the entire round.
+
 ## Important
 
 - You are invisible to the conversation except for the final summary.
-- The ONLY time you call `message` is for the summary. All other thread posts come from agent subagents.
+- The ONLY time you call `message` is for the summary (or an error report if everything fails). All other thread posts come from agent subagents.
 - Each agent is a separate, isolated subagent with its own model call.
-- If an agent spawn fails, log it in your memory and continue with the next agent.
 - Respect Jorge's time — quality over quantity.

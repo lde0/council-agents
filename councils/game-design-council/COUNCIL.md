@@ -26,9 +26,10 @@
 ## Eagerness Parameters
 - Response threshold: 0.30
 - Exception threshold: 0.85
-- Suppression per response: +0.20
-- Suppression lift per other response: -0.05
+- Suppression per response: +0.25
+- Suppression lift per other response: -0.03
 - Suppression cap: 0.80
+- Round decay: R1=1.0, R2=0.70, R3=0.45
 
 ## Rules
 

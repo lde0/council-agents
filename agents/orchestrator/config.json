@@ -6,9 +6,10 @@
   "eagerness": {
     "responseThreshold": 0.30,
     "exceptionThreshold": 0.85,
-    "suppressionPerResponse": 0.20,
-    "suppressionLiftPerOtherResponse": 0.05,
-    "suppressionCap": 0.80
+    "suppressionPerResponse": 0.25,
+    "suppressionLiftPerOtherResponse": 0.03,
+    "suppressionCap": 0.80,
+    "roundDecay": [1.0, 0.70, 0.45]
   },
   "termination": {
     "initialMaxRounds": 3,
