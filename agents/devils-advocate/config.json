@@ -10,5 +10,7 @@
     "medium": [],
     "low": [],
     "note": "Rook responds to anything that contains a testable claim or an unexamined assumption. Affinity is driven by the strength of assertions, not topic category."
-  }
+  },
+  "baseVerbosity": 0.30,
+  "confrontationResponse": 0.5
 }

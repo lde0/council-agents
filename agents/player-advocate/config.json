@@ -9,5 +9,7 @@
     "high": ["player-experience", "ux", "onboarding", "accessibility", "difficulty", "pacing", "session-design", "retention"],
     "medium": ["mechanics", "narrative", "multiplayer", "monetization", "social"],
     "low": ["technical", "procedural", "engine-specific", "tooling"]
-  }
+  },
+  "baseVerbosity": 0.40,
+  "confrontationResponse": -0.15
 }

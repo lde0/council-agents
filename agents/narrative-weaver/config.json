@@ -9,5 +9,7 @@
     "high": ["narrative", "worldbuilding", "theme", "character", "storytelling", "lore", "environmental-design", "dialogue"],
     "medium": ["player-experience", "aesthetics", "level-design", "audio", "atmosphere"],
     "low": ["balance-tuning", "technical", "procedural", "economy", "monetization"]
-  }
+  },
+  "baseVerbosity": 0.50,
+  "confrontationResponse": 0.1
 }

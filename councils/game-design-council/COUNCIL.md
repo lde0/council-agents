@@ -23,6 +23,26 @@
 | `narrative-weaver` | `councils/agents/narrative-weaver/` | Sable | Narrative & worldbuilding | claude-opus-4-6 |
 | `devils-advocate` | `councils/agents/devils-advocate/` | Rook | Critical analysis & stress-testing | claude-opus-4-6 |
 
+## Verbosity
+
+All values 0.0–1.0. The scale represents conversational register:
+
+| Value | Register |
+|-------|----------|
+| 0.00 | One/two word responses |
+| 0.15 | Twitch/YouTube chat |
+| 0.30 | SMS / DMs |
+| 0.45 | Discord / forums |
+| 0.60 | Reddit |
+| 0.75 | Academic / professional |
+| 0.90 | Oxford-style debate |
+| 1.00 | Lectures |
+
+- **verbosityMin**: 0.25
+- **verbosityMax**: 0.55
+
+Agents choose where they land between min and max based on their `baseVerbosity` preference, nudged by eagerness (higher eagerness → nudge toward max). The council range keeps the overall tone consistent while allowing individual variation.
+
 ## Eagerness Parameters
 - Response threshold: 0.30
 - Exception threshold: 0.85
@@ -48,8 +68,8 @@
 - Bold agent name prefix: `**{AgentName}**`
 - End-of-response marker: `───`
 - No signature lines
-- 2-4 paragraphs (1-3 for short takes)
-- Conversational: engage with preceding responses
+- Length determined by computed verbosity — at this council's range (0.25–0.55), expect 2-6 sentences typically, not paragraphs
+- Conversational: engage with preceding responses, be direct, skip preamble
 
 ### Explicit Mentions
 - If Jorge @mentions or names a specific agent in a message, that agent responds regardless of eagerness
